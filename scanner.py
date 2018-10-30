@@ -1,47 +1,22 @@
 import re
 class scanner():
-    other = False
-    STATES = {        
-        'START': True,
-        'IN_COMMENT' : False,
-        'IN_IDENTIFIER': False,
-        'IN_NUMBER': False,
-        'IN_ASSIGNMENT': False,
-        'DONE': False,
-        'OTHER': False
-    }
-    tokens = []
-    KEYWORDS = ['else', 'end', 'if', 'repeat', 'then', 'until', 'read', 'write']
-    OPERATORS = {
-        '+'         : 'PLUS',
-        '-'         : 'MINUS',
-        '*'         : 'MULT',
-        '/'         : 'DIV_FLOAT',
-        ':'         : 'COLON',
-        '='         : 'EQUALS',
-        ':='        : 'ASSIGNMENT',
-        '>'         : 'GREATER',
-        '<'         : 'LESS',
-        ';'         : 'SEMICOLON',
-        '('         : 'OPEN_PARENTHESIS',
-        ')'         : 'CLOSE_PARENTHESIS'
-    }
+
+    def __init__(self):
+        self.set_state('START')
+        self.tokens = []
+
     def set_state(self, state):
         for key in self.STATES:
             self.STATES[key] = False
         self.STATES[state] = True
+
     def get_state(self, state):
         return self.STATES[state]
 
-    def print_state(self):
-        for key,val in self.STATES.items():
-            if val:
-                print("state is " + key)
-
-    def scan(self, str):
+    def scan(self, input_file='input.txt'):
+        input_text = self.read_file(input_file)
         token = ''
-        for c in str:
-            
+        for c in input_text:
             if self.get_state('START'):
                 if self.is_symbol(c):
                     self.set_state('DONE')            
@@ -94,7 +69,7 @@ class scanner():
 
             if self.get_state('DONE'):
                 self.classify(token)
-                if self.other:
+                if self.state_other:
                     token = c
                     if self.is_col(c): self.set_state('IN_ASSIGNMENT')
                     if self.is_comment(c): self.set_state('IN_COMMENT')
@@ -104,7 +79,7 @@ class scanner():
                         self.classify(c)
                         token = ''
                         self.set_state('START')
-                    self.other = False
+                    self.state_other = False
                 else:
                     token = ''
                 self.set_state('START')
@@ -125,26 +100,60 @@ class scanner():
             
     def is_str(self, token):
         return token.isalpha()
+
     def is_num(self, token):
         return token.isdigit()
+
     def is_col(self, c):
         return True if c == ':' else False
+
     def is_symbol(self, token):
         symbol = ['+', '-', '*', '/', '=', '<', '>', '(', ')', ';']
         return True if token in symbol else False
+
     def is_comment(self, token):
         return True if re.match(r'^{.+}$', token) else False
 
+    def read_file(self, fileName):
+        with open(fileName, 'r') as f:
+            input_text = f.read()
+            return input_text
 
-input_file  = open('input.txt', 'r')
-input_text = input_file.read()
+    def output(self):
+        with open('output.txt', 'w') as f:
+            f.write('{:<12}  {:>12}\n'.format('Type', 'Token'))
+            f.write('{:<12}  {:>12}\n'.format('=====', '====='))
+            for token in self.tokens:
+                f.write('{:<12}  {:>12}\n'.format(token[1], token[0]))
+    
+    state_other = False
+    STATES = {        
+        'START': False,
+        'IN_COMMENT' : False,
+        'IN_IDENTIFIER': False,
+        'IN_NUMBER': False,
+        'IN_ASSIGNMENT': False,
+        'DONE': False,
+        'OTHER': False
+    }
+    KEYWORDS = ['else', 'end', 'if', 'repeat', 'then', 'until', 'read', 'write']
+    OPERATORS = {
+        '+'         : 'PLUS',
+        '-'         : 'MINUS',
+        '*'         : 'MULT',
+        '/'         : 'DIV_FLOAT',
+        ':'         : 'COLON',
+        '='         : 'EQUALS',
+        ':='        : 'ASSIGNMENT',
+        '>'         : 'GREATER',
+        '<'         : 'LESS',
+        ';'         : 'SEMICOLON',
+        '('         : 'OPEN_PARENTHESIS',
+        ')'         : 'CLOSE_PARENTHESIS'
+    }
+
+
 
 x = scanner()
-x.scan(input_text.replace('\n', ' '))
-output_file = open('output.txt','w')
-
-for t in x.tokens:
-    output_file.write(t[0] + ', ' + t[1] + '\n') 
-
-input_file.close()
-output_file.close() 
+x.scan('input.txt')
+x.output()
