@@ -86,9 +86,7 @@ class scanner():
                 self.set_state('START')
 
     def classify(self, token):
-        print(token)
         if token[-1:] == ' ': token = token[0:-1]
-        token = token.replace('\n','')
         if self.is_str(token):
             if token in self.KEYWORDS:
                 self.tokens.append([token, token.upper()])
@@ -120,6 +118,8 @@ class scanner():
     def read_file(self, fileName):
         with open(fileName, 'r') as f:
             input_text = f.read()
+            input_text = input_text.replace('\n','')
+            input_text += ' '
             return input_text
 
     def output(self):
