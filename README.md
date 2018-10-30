@@ -6,7 +6,7 @@
 3. Drag and drop the text file on the exe file **OR** name your text file **sample_input.txt** and just double click the exe file.
 4. A new file named **output.txt** will be created containing all the token with their types in the input file.
 
-**Sample Input:**
+### Sample Input:
 
 ```
 { Sample program in TINY language - computes factorial }
@@ -21,7 +21,7 @@ write fact { output factorial of x }
 end
 ```
 
-**Sample Output:**
+### Sample Output:
 
 ```
 Type                 Token
