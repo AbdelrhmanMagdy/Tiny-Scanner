@@ -4,6 +4,7 @@ class scanner():
     def __init__(self):
         self.set_state('START')
         self.tokens = []
+        self.state_other = False
 
     def set_state(self, state):
         for key in self.STATES:
@@ -65,7 +66,7 @@ class scanner():
             
             if self.get_state('OTHER'):
                 self.set_state('DONE')
-                self.other = True  
+                self.state_other = True  
 
             if self.get_state('DONE'):
                 self.classify(token)
@@ -85,7 +86,9 @@ class scanner():
                 self.set_state('START')
 
     def classify(self, token):
+        print(token)
         if token[-1:] == ' ': token = token[0:-1]
+        token = token.replace('\n','')
         if self.is_str(token):
             if token in self.KEYWORDS:
                 self.tokens.append([token, token.upper()])
@@ -126,7 +129,7 @@ class scanner():
             for token in self.tokens:
                 f.write('{:<12}  {:>12}\n'.format(token[1], token[0]))
     
-    state_other = False
+    
     STATES = {        
         'START': False,
         'IN_COMMENT' : False,
@@ -151,9 +154,3 @@ class scanner():
         '('         : 'OPEN_PARENTHESIS',
         ')'         : 'CLOSE_PARENTHESIS'
     }
-
-
-
-x = scanner()
-x.scan('input.txt')
-x.output()
