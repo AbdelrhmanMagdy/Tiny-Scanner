@@ -41,7 +41,8 @@ IDENTIFIER            fact
 ASSIGNMENT              :=
 NUMBER                   1
 SEMICOLON                ;
-IDENTIFIER      repeatfact
+REPEAT              repeat
+IDENTIFIER            fact
 ASSIGNMENT              :=
 IDENTIFIER            fact
 MULT                     *
