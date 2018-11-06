@@ -118,7 +118,7 @@ class scanner():
     def read_file(self, fileName):
         with open(fileName, 'r') as f:
             input_text = f.read()
-            input_text = input_text.replace('\n','')
+            input_text = input_text.replace('\n',' ')
             input_text += ' '
             return input_text
 
